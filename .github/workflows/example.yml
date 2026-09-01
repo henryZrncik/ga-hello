@@ -2,6 +2,11 @@ name: example
 on:
   push:
   workflow_dispatch:
+    inputs:
+      debug_enabled:
+        description: "Open a remote debug session"
+        type: boolean
+        default: true
 
 jobs:
   build:
@@ -13,3 +18,10 @@ jobs:
         run: echo "hello"
       - name: Run app
         run: ./app.sh
+
+      - name: upterm debug
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+        uses: owenthereal/action-upterm@v1
+        timeout-minutes: 20
+        with:
+          limit-access-to-actor: false
